@@ -174,10 +174,14 @@ def watch_training():
         bar.progress(min(frac, 1.0),
                      text=f"{t['state']}: epoch {t['epoch']}/{t['total_epochs']}  {t['message']}")
         if t["state"] == "error":
-            st.error(t["message"])
+            st.error(f"Training failed: {t['message']}")
             return
         if t["state"] == "idle":
-            st.success(t["message"] or "Done")
+            m = s["metrics"]
+            text = f"{t['message'] or 'Done'} | model v{m.get('model_version')}, accuracy {m.get('accuracy', 0):.4f}"
+            if m.get("previous_accuracy") is not None:
+                text += f" (before: {m['previous_accuracy']:.4f})"
+            st.success(text)
             return
         time.sleep(3)
 
@@ -197,14 +201,22 @@ def page_retrain():
     if files and st.button("Upload images"):
         res, err = api("POST", "/upload", data={"class_name": folder},
                        files=[("files", (f.name, f.getvalue(), f.type)) for f in files])
-        st.error(err) if err else st.success(res)
+        if err:
+            st.error(err)
+        else:
+            st.success(f"Saved {res['saved']} images, skipped {res['skipped']}. "
+                       f"{res['pending_new_images']} images are now waiting for retraining.")
 
     st.subheader("2. Or upload a zip (one folder per class)")
     z = st.file_uploader("Zip file, e.g. Sneaker/1.png, Bag/2.png", type=["zip"], key="zip")
     if z and st.button("Upload zip"):
         res, err = api("POST", "/upload-zip", timeout=300,
                        files={"file": (z.name, z.getvalue(), "application/zip")})
-        st.error(err) if err else st.success(res)
+        if err:
+            st.error(err)
+        else:
+            st.success(f"Saved {res['saved']} images, skipped {res['skipped']}. "
+                       f"{res['pending_new_images']} images are now waiting for retraining.")
 
     st.subheader("3. Retrain")
     s, _ = api("GET", "/status")
@@ -232,9 +244,9 @@ def page_retrain():
 
 
 # ---------------- Navigation ----------------
-page = st.sidebar.radio("Page", ["Dashboard", "Visualizations", "Predict", "Upload & Retrain"])
+PAGES = {"Dashboard": page_dashboard, "Visualizations": page_visualizations,
+         "Predict": page_predict, "Upload & Retrain": page_retrain}
+page = st.sidebar.radio("Page", list(PAGES))
 h, _ = api("GET", "/health", timeout=5)
 st.sidebar.write("API: online" if h else "API: offline")
-{"Dashboard": page_dashboard, "Visualizations": page_visualizations,
- "Predict": page_predict, "Upload & Retrain": page_retrain}[page]()
- 
+PAGES[page]()
