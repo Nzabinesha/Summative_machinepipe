@@ -7,7 +7,7 @@ An end-to-end machine learning pipeline for **image classification** (Fashion-MN
 | What | Link |
 |---|---|
 | GitHub repository | https://github.com/Nzabinesha/Summative_machinepipe |
-| Demo video (YouTube) | **???**|
+| Demo video (YouTube) | **https://youtu.be/CVYHEsZqn2A**|
 | Live UI (Render) | https://summative-machinepipe-2.onrender.com |
 | Live API (Render) | https://summative-machinepipe.onrender.com |
 | Interactive API docs | https://summative-machinepipe.onrender.com/docs |
