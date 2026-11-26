@@ -164,5 +164,3 @@ locust -f locustfile.py --host http://localhost:8080 -u 100 -r 10
 **Interpretation.** With a single user the model answers in about 13 ms. With 100 users and one container, requests queue up: the median rose to 1.8 s and throughput reached about 47 requests/s. A second container cut the median to about 0.56 s (roughly 3x faster) and raised throughput to about 76 requests/s. A third container gave no further gain (median 0.55 s, about 81 requests/s), most likely because the Codespace's CPU cores were already fully used by two containers. Scaling out therefore helps until the host's CPU is saturated, and further gains would need more CPU cores or separate machines.
  
 Screenshots of the Locust statistics and charts for each run are in `results/screenshots/` and you can access it in this project github repo.
- 
-## Demo video
