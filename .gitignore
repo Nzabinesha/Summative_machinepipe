@@ -6,3 +6,39 @@ __pycache__/
 data/new/
 models/archive/
 models/training_status.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# macOS files
+.DS_Store
+
+# IDE configurations
+.vscode/
+.idea/
+
+# Temporary files
+*.log
+*.tmp
+
+# Testing cache
+.pytest_cache/
+
+# Load testing generated results
+tests/load_testing/results/
+
